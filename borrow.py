@@ -1,17 +1,22 @@
 from database import connection_db
 from search_book import search_book
+from rich.prompt import Prompt,Confirm
+from rich.console import Console
+from rich import print
+console=Console()
 class borrow():
 
     def __init__(self,user_id):
         choice=0
         while choice!=3: 
-            print('1.enter book id for borrow')
-            print('2.if you dont know book id please search the book')
-            print('Exit')
-            choice=input('enter your choice:')
+            console.print('1.borrow book',style='bold white')
+            console.print('2.search book',style='bold white')
+            console.print('3.Exit',style='bold yellow')
+            console.print('note:if you dont know book id please search the book',style='bold yellow1 underline')
+            choice=console.input('[bold white]enter your choice:')
             match choice:
                 case '1':
-                    book_id=input('enter book id: ')
+                    book_id=console.input('[bold white]enter book id: ')
                     self.borrow_book(book_id,user_id)
                 case '2':
                     search_book(self)
@@ -24,19 +29,21 @@ class borrow():
         query=" select * from book where id = %s "
         cursor.execute(query,book_id)
         book=cursor.fetchone()
-        print(book)
+        # tableeeeeeeeee
+        console.print(book)
         choice=0
-        choice=input('YOU WANT THIS BOOK:\n1.YES\n2.NO')
+        choice=Confirm.ask("[bold white]DO YOU WANT THIS BOOK[/bold white]")
+
         if choice=='1': 
             if book['available']==1:
                 query='insert into borrow (book_id,user_id) value (%s,%s)'
                 cursor.execute(query,(book_id,user_id))
                 cursor.connection.commit()
-                print('BOOK BORROWED SUCCESSFULLY.')
+                console.print('BOOK BORROWED SUCCESSFULLY.',style='bold spring_green1')
                 query='update book set available=0 where id=%s'
                 cursor.execute(query,book_id)
                 cursor.connection.commit()
             else:
-                print('THIS BOOK IS NOT AVAILABLE.\nPLEASE SELECT ANOTHER BOOK.')
+                console.print('THIS BOOK IS NOT AVAILABLE.\nPLEASE SELECT ANOTHER BOOK.',style='bold red1')
         else:
-            return
+            return  

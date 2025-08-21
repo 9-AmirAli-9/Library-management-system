@@ -1,72 +1,78 @@
 from database import connection_db
 from admin import admin
 from user import users
+from rich import print
+from rich.prompt import Prompt
+from rich.console import Console
+console=Console()
 class auth():
     def __init__(self):
         choice ='0'
         while choice !='3':
-            print('1.Sign up')
-            print('2.Sign in')
-            print('3.Exit')
-            choice = input('please choose an option: ')
+            console.print('1.Sign up',style="bold medium_spring_green")
+            console.print('2.Sign in',style="bold bright_blue")
+            console.print('3.Exit',style="bold yellow")
+            choice = console.input('[bold white]Please choose an option: ')
             if choice == '1':
                 self.sign_up()
             elif choice == '2':
                 self.sign_in()
             elif choice == '3':
-                print("Exiting the system...")
+                console.print("Exiting the system...",style="bold red1")
                 break
             else:
-                print("Invalid choice, please try again.")
+                console.print("Invalid choice, please try again.",style="bold red1")
                 
     def sign_up(self):
         cursor=connection_db()  
-        print('please enter your information: ')
+        console.print('please enter your information: ',style="bold yellow1")
         username=self.isUsernameValid()
         password=self.pass_check()
-        password_confirm=input('confirm your password: ')
+        password_confirm=console.input('[bold white]confirm your password: ')
         phone=self.isPhoneNumberTaken()
         if password==password_confirm:
             query = "INSERT INTO users (username, `password`, phone) VALUES (%s, %s, %s)" 
             cursor.execute(query, (username, password, phone))
             cursor.connection.commit()
-            print('sign up successful')
+            console.print('sign up successful',style="bold spring_green1")
     
     def sign_in(self):   
         cursor = connection_db()
-        print("Enter your information: ")
-        username=input('Enter your username: ') 
-        password=input('Enter your password: ')
+        console.print("Enter your information: ",style="bold yellow1")
+        username=console.input('[bold white]Enter your username: ') 
+        password=console.input('[bold white]Enter your password: ')
         query="select `admin`, id from users where username=%s and `password`=%s "
         cursor.execute(query , (username,password))
         user=cursor.fetchone()
         if user:
-            print('Login seccsesfully. ')
+            console.print('Login seccsesfully. ',style="bold spring_green1")
             if user["admin"]==1:
                 self=admin()
                 
             else:
                 users(user['id'])
+        else:
+            console.print('This username not found.',style="bold red1")
             
     def pass_check(self):
         flag=False
         while flag!=True:
-            password=input('enter your password: ')
+            password=console.input('[bold white]enter your password: ')
             if len(password) < 8:
-                print('password is too short')
+                console.print('password is too short.',style="bold red1")
                 flag=False
             elif not any(char.isdigit() for char in password):
-                print('password must contain at least one digit')
+                console.print('password must contain at least one digit.',style="bold red1")
                 flag=False
             elif not any(char.isupper() for char in password):
-                print('password must contain at least one uppercase letter')
+                console.print('password must contain at least one uppercase letter.',style="bold red1")
                 flag=False
             else:
-                print('password confirmed')
+                console.print('password confirmed.',style="bold spring_green1")
                 flag=True
         return password
     
-    def isUsernameTaken(self, username):
+    def isUsernameTaken(self, username):       
         cursor = connection_db()
         flag=False
         while flag!=True:
@@ -75,36 +81,36 @@ class auth():
             cursor.execute(query, (username))
             result = cursor.fetchone()
             if result:
-                print('username already taken')
-                flag=False
-                username = self.isUsernameValid()                
+                console.print('username already taken',style="bold red1")
+                return False              
             else:
                 return True
+            
     
     def isUsernameValid(self):
         flag=False
         while flag!=True:
-            username = input('enter your username: ')
+            username = console.input('[bold white]enter your username',style="")
             if len(username) < 5:
-                print('username is too short')
+                console.print('username is too short',style="bold red1")
                 flag=False
             elif not username.isalnum():
-                print('username must contain only letters and numbers')
+                console.print('username must contain only letters and numbers',style="bold red1")
                 flag=False
             else:
                 flag=self.isUsernameTaken(username)
-                return username   
+        return username   
     def isPhoneNumberTaken(self):
         cursor = connection_db()
         flag=False
-        phone=input("Enter your phone number: ")
+        phone=console.input("[bold white]Enter your phone number: ")
         while flag !=True:
             query = 'select phone from users where phone=%s'
             cursor.execute(query , (phone))
             result=cursor.fetchone()
             if result:
-                print('Number already used.')
-                phone=input("Enter your phone number again: ")
+                console.print('Number already used.',style="bold red1")
+                phone=console.input("[bold white]Enter your phone number again: ")
                 
             else:
                 return phone
