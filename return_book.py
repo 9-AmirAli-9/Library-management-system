@@ -27,17 +27,18 @@ class return_book():
                  where borrow.user_id = %s """
         cursor.execute(query,user_id)
         book_list=cursor.fetchall()
+        # نمایش دادن تمام کتاب هایی که کاربر قرض گرفته به صورت جدول
         console.print(book_list)
 
     def returned_book(self,user_id):
         cursor=connection_db()
-        book_id=console.input('ENTER THE BOOK ID: ')
-        console.print(book_id,style="")
-        console.print(user_id,style="")
+        book_id=console.input('[bold white]ENTER THE BOOK ID: ')
+# نشون دادن اطلاعات کتابی که ایدیش وارد بشه به صورت جدول توی ترمینال
+        # یه شرط برای بررسی درست بودن اطلاعات کتابی که ایدیش وارد شده و سپس اجرای کوئری
         query='insert into returned (book_id,user_id) value (%s,%s)'
         cursor.execute(query,(book_id,user_id))
         cursor.connection.commit()
-        console.print('BOOK RETURNED SECCESSFULLY',style="")
+        console.print('BOOK RETURNED SECCESSFULLY',style="bold spring_green1")
         query='update book set available=1 where id=%s'
         cursor.execute(query,book_id)
         cursor.connection.commit()
