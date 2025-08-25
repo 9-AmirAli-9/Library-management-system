@@ -90,7 +90,7 @@ class auth():
     def isUsernameValid(self):
         flag=False
         while flag!=True:
-            username = console.input('[bold white]enter your username',style="")
+            username = console.input('[bold white]enter your username: ')
             if len(username) < 5:
                 console.print('username is too short',style="bold red1")
                 flag=False
