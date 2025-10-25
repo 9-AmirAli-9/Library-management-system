@@ -1,13 +1,9 @@
+{%extends "base.html"%}
+{%block main%}
 {%load static%}
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-  <head>
-    <link href="{% static "css/style.css"%}" rel="stylesheet" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>صفحه خانه</title>
-  </head>
-  <body>
+
+{% include 'header.html' %}
     <h1>خوش آمدید به صفحه خانه!</h1>
-  </body>
-</html>
+
+
+{%endblock main%}

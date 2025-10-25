@@ -31,10 +31,10 @@ class borrow():
         book=cursor.fetchone()
         # tableeeeeeeeee
         console.print(book)
-        choice=0
-        choice=Confirm.ask("[bold white]DO YOU WANT THIS BOOK[/bold white]")
-
-        if choice=='1': 
+        choice='0'
+        choice=console.input("[bold white]DO YOU WANT THIS BOOK?[/bold white]")
+        print(choice)
+        if choice=='y' or choice=='yes': 
             if book['available']==1:
                 query='insert into borrow (book_id,user_id) value (%s,%s)'
                 cursor.execute(query,(book_id,user_id))
@@ -45,5 +45,7 @@ class borrow():
                 cursor.connection.commit()
             else:
                 console.print('THIS BOOK IS NOT AVAILABLE.\nPLEASE SELECT ANOTHER BOOK.',style='bold red1')
+        
         else:
+            print('nashod')
             return  
