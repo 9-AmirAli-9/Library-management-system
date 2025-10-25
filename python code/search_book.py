@@ -1,15 +1,18 @@
 from database import connection_db
+from rich.console import Console
+from rich import print
+console=Console()
 
 class search_book():
     def __init__(self):
         choice='0'
         while choice!='5':
-            print("1.Search by title: ")
-            print("2.Search by author: ")
-            print("3.Search by genre: ")
-            print("4.Search by published date: ")
-            print("5.exit")
-            choice=input('Enter your choice: ')
+            console.print("1.Search by title: ",style='bold green')
+            console.print("2.Search by author: ",style='bold green')
+            console.print("3.Search by genre: ",style='bold green')
+            console.print("4.Search by published date: ",style='bold green')
+            console.print("5.exit",style='bold red1')
+            choice=input('[bold white]Enter your choice: ')
 
             match choice:
                 case '1':
@@ -24,18 +27,18 @@ class search_book():
                     self.search_published_date()
 
                 case '5':
-                    print("Exiting the system...")
+                    console.print("Exiting the system...",style='bold red1')
                     break
 
     def search_title(self):
         cursor=connection_db()
-        book_title=input("enter your book title: ")
+        book_title=input("[bold white]enter your book title: ")
         query = "select * from book where  title like %s "
         book_title = '%' + book_title + '%'
         cursor.execute(query,book_title)
         book=cursor.fetchall()
         for book in book:
-            print(book)
+            console.print(book,style='bold white')
         cursor.close()
     
     def search_author(self):
@@ -46,7 +49,7 @@ class search_book():
         cursor.execute(query,book_author)
         book=cursor.fetchall()
         for book in book:
-            print(book)
+            console.print(book,style='bold white')
         cursor.close()
     
     def search_genre(self):
@@ -57,7 +60,7 @@ class search_book():
         cursor.execute(query,book_genre)
         book=cursor.fetchall()
         for book in book:
-            print(book)
+            console.print(book,style='bold white')
         cursor.close()
     
     def search_published_date(self):
@@ -68,5 +71,5 @@ class search_book():
         cursor.execute(query,book_published_date)
         book=cursor.fetchall()
         for book in book:
-            print(book)
+            console.print(book,style='bold white')
         cursor.close()
